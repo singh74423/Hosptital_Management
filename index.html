@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="card login-card">
+            <div class="card__body">
+                <h2>Doctor Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" id="email" class="form-control" value="qspiderr@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-control" value="password" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="main-app" class="main-app hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>MedDash</h3>
+                <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">🏠</span>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="patients">
+                    <span class="nav-icon">👥</span>
+                    Patients
+                </a>
+                <a href="#" class="nav-item" data-page="appointments">
+                    <span class="nav-icon">📅</span>
+                    Appointments
+                </a>
+                <a href="#" class="nav-item" data-page="training">
+                    <span class="nav-icon">📚</span>
+                    Training
+                </a>
+                <a href="#" class="nav-item" data-page="analytics">
+                    <span class="nav-icon">📊</span>
+                    Analytics
+                </a>
+                <a href="#" class="nav-item" data-page="profile">
+                    <span class="nav-icon">👤</span>
+                    Profile
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙️</span>
+                    Settings
+                </a>
+                <a href="#" class="nav-item" data-page="help">
+                    <span class="nav-icon">❓</span>
+                    Help
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn--outline" id="logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-nav">
+                <div class="search-container">
+                    <input type="text" class="form-control search-input" placeholder="Search patients or records..." id="global-search">
+                </div>
+                <div class="user-menu">
+                    <div class="user-avatar">Dr</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <div class="page active" id="dashboard-page">
+                <div class="page-header">
+                    <h1>Dashboard</h1>
+                    <p class="page-subtitle">Welcome back, Dr. Alice</p>
+                </div>
+
+                <!-- Training Banner -->
+                <div class="card training-banner">
+                    <div class="card__body">
+                        <div class="training-content">
+                            <div>
+                                <h3>Upcoming Training</h3>
+                                <p>Medical Training with Dr. Richard - August 1, 2025</p>
+                            </div>
+                            <button class="btn btn--primary" id="add-to-schedule-btn">Add to Schedule</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="card__body">
+                            <h3>Total Patients</h3>
+                            <div class="stat-number" id="total-patients">0</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="card__body">
+                            <h3>Patients Recovered</h3>
+                            <div class="stat-number" id="patients-recovered">0</div>
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="card__body">
+                            <h3>Patients in Operation</h3>
+                            <div class="stat-number" id="patients-operation">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patients Page -->
+            <div class="page" id="patients-page">
+                <div class="page-header">
+                    <h1>Patient Management</h1>
+                    <button class="btn btn--primary" id="add-patient-btn">Add Patient</button>
+                </div>
+                
+                <!-- Filter Chips -->
+                <div class="filter-chips">
+                    <button class="chip active" data-filter="all">All</button>
+                    <button class="chip" data-filter="Recovered">Recovered</button>
+                    <button class="chip" data-filter="Under Treatment">Under Treatment</button>
+                    <button class="chip" data-filter="In Operation">In Operation</button>
+                </div>
+
+                <!-- Patients Table -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        <th>Condition</th>
+                                        <th>Status</th>
+                                        <th>Admission Date</th>
+                                        <th>Doctor</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="patients-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointments Page -->
+            <div class="page" id="appointments-page">
+                <div class="page-header">
+                    <h1>Appointment Scheduling</h1>
+                    <button class="btn btn--primary" id="new-appointment-btn">New Appointment</button>
+                </div>
+                
+                <!-- Calendar -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <button class="btn btn--outline" id="prev-month">‹</button>
+                                <h3 id="current-month">July 2025</h3>
+                                <button class="btn btn--outline" id="next-month">›</button>
+                            </div>
+                            <div class="calendar-grid" id="calendar-grid">
+                                <!-- Calendar will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Page -->
+            <div class="page" id="training-page">
+                <div class="page-header">
+                    <h1>Training & Notifications</h1>
+                    <button class="btn btn--primary" id="add-training-btn">Add Training</button>
+                </div>
+                
+                <div class="training-list" id="training-list">
+                    <!-- Training items will be generated here -->
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div class="page" id="analytics-page">
+                <div class="page-header">
+                    <h1>Analytics & Reports</h1>
+                    <select class="form-control year-selector" id="year-selector">
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Monthly Admissions</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="admissions-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Patient Status Distribution</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="status-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page" id="profile-page">
+                <div class="page-header">
+                    <h1>Profile Management</h1>
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div class="profile-form">
+                            <div class="profile-avatar">
+                                <div class="avatar-circle">Dr</div>
+                                <button class="btn btn--outline">Change Avatar</button>
+                            </div>
+                            <div class="profile-fields">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" value="Dr. Alice" id="profile-name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bio</label>
+                                    <textarea class="form-control" rows="3" id="profile-bio">Experienced cardiologist with 15 years of practice.</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="alice@hospital.com" id="profile-email">
+                                </div>
+                                <button class="btn btn--primary">Update Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="page" id="settings-page">
+                <div class="page-header">
+                    <h1>System Settings</h1>
+                </div>
+                
+                <div class="settings-sections">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Appearance</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="setting-item">
+                                <label class="setting-label">Theme</label>
+                                <select class="form-control" id="theme-selector">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Data Management</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="data-actions">
+                                <button class="btn btn--outline" id="export-data-btn">Export Data</button>
+                                <button class="btn btn--outline" id="import-data-btn">Import Data</button>
+                                <input type="file" id="import-file" accept=".json" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Page -->
+            <div class="page" id="help-page">
+                <div class="page-header">
+                    <h1>Help Center</h1>
+                </div>
+                
+                <div class="card">
+                    <div class="card__body">
+                        <div class="faq-section">
+                            <h3>Frequently Asked Questions</h3>
+                            
+                            <div class="faq-item">
+                                <h4>How do I add a new patient?</h4>
+                                <p>Navigate to the Patients page and click the "Add Patient" button. Fill in the required information and click Save.</p>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <h4>How can I schedule an appointment?</h4>
+                                <p>Go to the Appointments page, click "New Appointment", select a patient and time slot, then save the appointment.</p>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <h4>How do I view analytics?</h4>
+                                <p>Visit the Analytics page to view charts and reports about patient admissions, recovery rates, and other statistics.</p>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <h4>Can I export my data?</h4>
+                                <p>Yes, go to Settings and use the "Export Data" button to download your data as a JSON file.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Patient Modal -->
+    <div class="modal hidden" id="patient-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="patient-modal-title">Add Patient</h3>
+                <button class="modal-close" id="patient-modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="patient-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" id="patient-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Age</label>
+                            <input type="number" class="form-control" id="patient-age" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select class="form-control" id="patient-gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Condition</label>
+                            <input type="text" class="form-control" id="patient-condition" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="patient-status" required>
+                                <option value="">Select Status</option>
+                                <option value="Recovered">Recovered</option>
+                                <option value="Under Treatment">Under Treatment</option>
+                                <option value="In Operation">In Operation</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Doctor</label>
+                            <select class="form-control" id="patient-doctor" required>
+                                <option value="">Select Doctor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Treatment Notes</label>
+                        <textarea class="form-control" id="patient-notes" rows="3"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn--outline" id="cancel-patient">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Modal -->
+    <div class="modal hidden" id="appointment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Appointment</h3>
+                <button class="modal-close" id="appointment-modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="appointment-form">
+                    <div class="form-group">
+                        <label class="form-label">Patient</label>
+                        <select class="form-control" id="appointment-patient" required>
+                            <option value="">Select Patient</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Doctor</label>
+                        <select class="form-control" id="appointment-doctor" required>
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control" id="appointment-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input type="time" class="form-control" id="appointment-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="appointment-title" placeholder="e.g., Follow-up" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn--outline" id="cancel-appointment">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Modal -->
+    <div class="modal hidden" id="training-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Training</h3>
+                <button class="modal-close" id="training-modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="training-form">
+                    <div class="form-group">
+                        <label class="form-label">Training Topic</label>
+                        <input type="text" class="form-control" id="training-topic" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control" id="training-date" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn--outline" id="cancel-training">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Add Training</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
